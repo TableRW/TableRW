@@ -1,15 +1,18 @@
-# TableRW
-## Introduction ( English | [中文](Doc/README.zh-CN.md) )
+# TableRW (English | [中文](Doc/README.zh-CN.md))
+[![NuGet Version](https://img.shields.io/nuget/v/TableRW.svg?label=NuGet)](https://www.nuget.org/packages/TableRW)
+
 A library for reading and writing table data, using expression trees to generate delegates (Lambda), quickly and conveniently reading and writing data to entity objects (Entity), and mapping multi-layer entities to read and write.
 
-(Currently the mapping for reading has been implemented, and development for writing has not yet started)
+```
+dotnet add package TableRW
+```
 
 ## Read from `DataTable` to Entity
 
 ### Add namespace
 ```cs
-using TableRW.Reader; // Read method
-using TableRW.Reader.DataTableEx; // DataTable extension method
+using TableRW.Read; // Read method
+using TableRW.Read.DataTableEx; // DataTable extension method
 ```
 
 ### Simple reading (not cached)
@@ -62,7 +65,7 @@ _ = list[1].SubB.Count == 1;
 ```
 
 ### Cache Generated delegate
-The `reader` above compiles the expression tree every time it is executed, and should actually cache the resulting `readFn` and call the delegate directly afterwards.
+The above `reader` compiles the expression tree every time it is executed, and should actually cache the resulting `readFn` and call the delegate directly afterwards.
 ``` cs
 // The user needs to create a new class to manage the Cache.
 static class CacheReadFn<T> {
@@ -91,8 +94,8 @@ var list = CacheReadTbl.Read<Entity>(table, reader => {
 ### Use the cache provided by the library
 This library also has some simple encapsulation for user-friendly invocation:
 ``` cs
-using TableRW.Reader;
-using TableRW.Reader.DataTableEx; // DataTable extension method
+using TableRW.Read;
+using TableRW.Read.DataTableEx; // DataTable extension method
 
 void Example(DataTable tbl) {
     // Use the column name of the DataTable as the property mapping.
@@ -110,7 +113,7 @@ void Example(DataTable tbl) {
 }
 ```
 
-### Events while reading
+### Events on read
 ``` cs
 static void Example(DataTable tbl) {
 var list2 = tbl.ReadToList<Entity>(cacheKey: 0, reader => {
@@ -200,6 +203,105 @@ var list = tbl.ReadToList<Entity>(cacheKey: 0, reader => {
 
 
     var lmd = reader.Lambda();
+    return lmd.Compile();
+});
+}
+```
+
+## Write `DataTable`
+
+### Add namespace
+``` cs
+using TableRW.Write;
+using TableRW.Write.DataTableEx;
+```
+
+### Simple write (not cached)
+``` cs
+public class Entity {
+    public long Id { get; set; }
+    public string Name;
+    public string Tel; // it can be of a field
+    public int? NullableInt { get; set; } // or a property
+}
+
+var writer = new DataTblWriter<Entity>()
+    .AddColumns((s, e) => s(e.Id, s.Skip(1), e.Name, e.Tel, e.NullableInt));
+
+// When debugging, you can view the generated expression tree
+var writeLmd = writer.Lambda(); // Expression<Action<DataTable, IEnumerable<Entity>>>
+var writeFn = writeLmd.Compile(); // Action<DataTable, IEnumerable<Entity>>
+IEnumerable<Entity> data = new List<Entity>();
+writeFn(dataTable, data);
+```
+
+### Cache Generated delegate
+The above `writer` compiles the expression tree for each execution, and should actually cache the resulting `writeFn`, and call the delegate directly thereafter.
+``` cs
+// The user needs to create a new class to manage the Cache.
+static class CacheWriteFn<T> {
+    internal static Action<DataTable, IEnumerable<T>>? Fn;
+}
+
+static class CacheWriteTbl {
+    public static void WriteFrom<T>(
+        DataTable tbl, IEnumerable<TEntity> data, Action<DataTblWriter<T>> buildWrite
+    ) {
+        if (CacheWriteFn<T>.Fn == null) {
+            var writer = new DataTblWriter<T>();
+            buildWrite(writer);
+
+            // When debugging, you can view the generated expression tree
+            var writeLmd = writer.Lambda();
+            CacheWriteFn<T>.Fn = writeLmd.Compile();
+        }
+        CacheWriteFn<T>.Fn(tbl);
+    }
+}
+
+var list = new List<Entity>();
+CacheWriteFn.WriteFrom<Entity>(table, list, writer => {
+    writer.AddColumns((s, e) => s(e.Id, e.Name, e.Tel, e.NullableInt));
+});
+```
+
+### Use the cache provided by the library
+This library also has some simple encapsulation for user-friendly invocation:
+``` cs
+using TableRW.Write;
+using TableRW.Write.DataTableEx;
+
+void Example(DataTable tbl, List<Entity> data) {
+    tbl.WriteFrom(data, cacheKey: 0, writer => {
+        writer.AddColumns((s, e) => s(e.Id, e.Name, e.Tel, e.NullableInt));
+
+        // When debugging, you can view the generated expression tree
+        var lmd = writer.Lambda();
+        return lmd.Compile();
+    );
+    // Data is written to tbl
+}
+```
+
+### Events on write
+``` cs
+static void Example(DataTable tbl, List<Entity> data) {
+
+tbl.WriteFrom(data, cacheKey: 0, writer => {
+    writer.AddColumns((s, e) =>
+        s(e.Id, e.Name, e.Tel, e.NullableInt))
+        .OnStartWritingTable(it => {
+            it.Src.TableName = "set TableName";
+        })
+        .OnStartWritingRow(it => {
+            it.Row[0] = "set column";
+        })
+        .OnEndWritingRow(it => {
+            it.Row[it.iCol + 1] = "set column";
+        })
+        .OnEndWritingTable(it => { });
+
+    var lmd = writer.Lambda();
     return lmd.Compile();
 });
 }

@@ -4,6 +4,24 @@
 		<TargetFrameworks>netstandard2.0;</TargetFrameworks>
 		<LangVersion>preview</LangVersion>
 		<Nullable>enable</Nullable>
+		<AssemblyName>TableRW</AssemblyName>
+		<AssemblyVersion>0.2.0</AssemblyVersion>
+		<PackageVersion>0.2.0</PackageVersion>
+		<Authors>Vst.h</Authors>
+		<PackageId>TableRW</PackageId>
+		<PackageTags>DataTable, Read, Write, Expression</PackageTags>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageProjectUrl>https://github.com/TableRW/TableRW</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/TableRW/TableRWv</RepositoryUrl>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Description>Reading and writing to table data, using expression trees to generate delegates (Lambda) </Description>
+
 	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="../LICENSE" Pack="true" PackagePath="" />
+		<None Include="../README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
 
 </Project>

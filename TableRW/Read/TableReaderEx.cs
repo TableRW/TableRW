@@ -68,6 +68,8 @@ public static class TableReaderEntityEx {
     /// <summary>
     /// Get the value of the column and call this action
     /// </summary>
+    /// <typeparam name="C"></typeparam>
+    /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TValue">value of the column</typeparam>
     public static ITableReader<C> AddColumnRead<C, TSource, TValue>(
         this ITableReader<C, ISource<TSource>> reader,
@@ -86,6 +88,8 @@ public static class TableReaderEntityEx {
     /// <summary>
     /// Get the value of the column and call this action
     /// </summary>
+    /// <typeparam name="C"></typeparam>
+    /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TValue">value of the column</typeparam>
     public static ITableReader<C> AddColumnRead<C, TSource, TValue>(
         this ITableReader<C, ISource<TSource>> reader,

@@ -13,7 +13,6 @@ internal class BuildTableOption((int row, int col) start)
 internal interface IBuildTableOption {
     int StartRow { get; }
     int StartCol { get; }
-    /// <summary> 可以是 List<TEntity>, Array </summary>
     Expression Enumerable { get; }
     ParameterExpression Src { get; }
     Expression[]? InitRow { get; }

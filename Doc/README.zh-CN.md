@@ -1,7 +1,11 @@
-# TableRW
-## 介绍 ( [English](../README.md) | 中文 )
+# TableRW ([English](../README.md) | 中文)
+[![NuGet Version](https://img.shields.io/nuget/v/TableRW.svg?label=NuGet)](https://www.nuget.org/packages/TableRW)
+
 对表格数据进行读取和写入的库，使用表达式树生成委托（Lambda），快速方便的读写数据到实体对象（Entity），多层实体的映射读写。
 
+```
+dotnet add package TableRW
+```
 
 ## 从 `DataTable` 读取到 Entity
 
@@ -93,8 +97,8 @@ var list = CacheReadTbl.Read<Entity>(table, reader => {
 ### 使用本库提供的缓存
 本库也进行了一些简单的封装，方便使用者的调用：
 ``` cs
-using TableRW.Reader;
-using TableRW.Reader.DataTableEx; // DataTable extension method
+using TableRW.Read;
+using TableRW.Read.DataTableEx; // DataTable extension method
 
 void Example(DataTable tbl) {
     // 使用 DataTable 的列名作为属性映射，列名和属性名必须相同
@@ -205,3 +209,104 @@ var list = tbl.ReadToList<Entity>(cacheKey: 0, reader => {
 });
 }
 ```
+
+## 写入 `DataTable`
+
+### 添加命名空间
+``` cs
+using TableRW.Write;
+using TableRW.Write.DataTableEx;
+```
+
+### 简单的写入（未缓存）
+``` cs
+public class Entity {
+    public long Id { get; set; }
+    public string Name;
+    public string Tel; // it can be of a field
+    public int? NullableInt { get; set; } // or a property
+}
+
+var writer = new DataTblWriter<Entity>()
+    .AddColumns((s, e) => s(e.Id, s.Skip(1), e.Name, e.Tel, e.NullableInt));
+
+// 可以在 debug 查看到生成的表达式树
+var writeLmd = writer.Lambda(); // Expression<Action<DataTable, IEnumerable<Entity>>>
+var writeFn = writeLmd.Compile(); // Action<DataTable, IEnumerable<Entity>>
+IEnumerable<Entity> data = new List<Entity>();
+writeFn(dataTable, data);
+```
+
+### 缓存生成的委托
+上面的 `writer` 每次执行都要编译表达式树，实际上应该把生成的 `writeFn` 进行缓存，之后的直接调用该委托。
+``` cs
+// 需要使用者自己新建这么一个类，管理 Cache
+static class CacheWriteFn<T> {
+    internal static Action<DataTable, IEnumerable<T>>? Fn;
+}
+
+// 简单使用的封装
+static class CacheWriteTbl {
+    public static void WriteFrom<T>(
+        DataTable tbl, IEnumerable<TEntity> data, Action<DataTblWriter<T>> buildWrite
+    ) {
+        if (CacheWriteFn<T>.Fn == null) {
+            var writer = new DataTblWriter<T>();
+            buildWrite(writer);
+
+            // 在 debug 时，可以查看生成的表达式树
+            var writeLmd = writer.Lambda();
+            CacheWriteFn<T>.Fn = writeLmd.Compile();
+        }
+        CacheWriteFn<T>.Fn(tbl);
+    }
+}
+
+var list = new List<Entity>();
+CacheWriteFn.WriteFrom<Entity>(table, list, writer => {
+    writer.AddColumns((s, e) => s(e.Id, e.Name, e.Tel, e.NullableInt));
+});
+```
+
+### 使用本库提供的缓存
+本库也进行了一些简单的封装，方便使用者的调用：
+``` cs
+using TableRW.Write;
+using TableRW.Write.DataTableEx;
+
+void Example(DataTable tbl, List<Entity> data) {
+    tbl.WriteFrom(data, cacheKey: 0, writer => {
+        writer.AddColumns((s, e) => s(e.Id, e.Name, e.Tel, e.NullableInt));
+
+        // 在 debug 时，可以查看生成的表达式树
+        var lmd = writer.Lambda();
+        return lmd.Compile();
+    );
+    // tbl 已经被写入数据
+}
+```
+
+### 写入时的事件
+``` cs
+static void Example(DataTable tbl, List<Entity> data) {
+
+tbl.WriteFrom(data, cacheKey: 0, writer => {
+    writer.AddColumns((s, e) =>
+        s(e.Id, e.Name, e.Tel, e.NullableInt))
+        .OnStartWritingTable(it => {
+            it.Src.TableName = "set TableName";
+        })
+        .OnStartWritingRow(it => {
+            it.Row[0] = "set column";
+        })
+        .OnEndWritingRow(it => {
+            it.Row[it.iCol + 1] = "set column";
+        })
+        .OnEndWritingTable(it => { });
+
+    var lmd = writer.Lambda();
+    return lmd.Compile();
+});
+}
+```
+
