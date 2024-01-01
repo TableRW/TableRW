@@ -1,7 +1,11 @@
-# TableRW
-## Introduction ( English | [中文](Doc/README.zh-CN.md) )
+# TableRW (English | [中文](Doc/README.zh-CN.md))
+[![NuGet Version](https://img.shields.io/nuget/v/TableRW.svg?label=NuGet)](https://www.nuget.org/packages/TableRW)
+
 A library for reading and writing table data, using expression trees to generate delegates (Lambda), quickly and conveniently reading and writing data to entity objects (Entity), and mapping multi-layer entities to read and write.
 
+```
+dotnet add package TableRW
+```
 
 ## Read from `DataTable` to Entity
 

@@ -15,21 +15,7 @@
 		<PackageProjectUrl>https://github.com/TableRW/TableRW</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/TableRW/TableRWv</RepositoryUrl>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-
-
-		<Description>
-Reading and writing to table data, using expression trees to generate delegates (Lambda).
-``` C#
-// read
-var reader = new DataTblReader&lt;EntityA&lt;()
-    .AddColumns((s, e) =&lt; s(s.RowKey(e.Id), e.Name, e.Date))
-    .AddSubTable(e =&lt; e.SubList, (s, e) =&lt; s(e.Id, e.Text, e.Remark));
-
-// write
-var writer = new DataTblWriter&lt;Entity&lt;()
-    .AddColumns((s, e) =&lt; s(e.Id, s.Skip(1), e.Name, e.Tel, e.NullableInt));
-```
-		</Description>
+		<Description>Reading and writing to table data, using expression trees to generate delegates (Lambda) </Description>
 
 	</PropertyGroup>
 
@@ -37,4 +23,5 @@ var writer = new DataTblWriter&lt;Entity&lt;()
 		<None Include="../LICENSE" Pack="true" PackagePath="" />
 		<None Include="../README.md" Pack="true" PackagePath="" />
 	</ItemGroup>
+
 </Project>

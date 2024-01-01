@@ -1,7 +1,11 @@
-# TableRW
-## 介绍 ( [English](../README.md) | 中文 )
+# TableRW ([English](../README.md) | 中文)
+[![NuGet Version](https://img.shields.io/nuget/v/TableRW.svg?label=NuGet)](https://www.nuget.org/packages/TableRW)
+
 对表格数据进行读取和写入的库，使用表达式树生成委托（Lambda），快速方便的读写数据到实体对象（Entity），多层实体的映射读写。
 
+```
+dotnet add package TableRW
+```
 
 ## 从 `DataTable` 读取到 Entity
 
