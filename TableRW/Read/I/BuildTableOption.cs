@@ -17,7 +17,7 @@ internal interface IBuildTableOption {
     Expression StartRow { get; }
     /// <summary> 可以是常量，也可以是变量，也可能是参数 </summary>
     Expression StartCol { get; }
-    /// <summary> 可以是 List<>, Array, Dictionary<>, HashSet<> </summary>
+    /// <summary> 可以是 List, Array, Dictionary, HashSet </summary>
     ParameterExpression Collection { get; }
     Expression NewCollection { get; }
     Expression CollectionAdd { get; }
