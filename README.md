@@ -260,7 +260,7 @@ static class CacheWriteTbl {
 }
 
 var list = new List<Entity>();
-CacheWriteFn.WriteFrom<Entity>(table, list, writer => {
+CacheWriteTbl.WriteFrom<Entity>(table, list, writer => {
     writer.AddColumns((s, e) => s(e.Id, e.Name, e.Tel, e.NullableInt));
 });
 ```
