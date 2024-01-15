@@ -7,6 +7,11 @@
 dotnet add package TableRW
 ```
 
+## 其他相关库的实现
+使用一样读写配置方法，也是表达式树生成委托，也添加了库相关的一些便捷方法。
+- Eppuls: [TableRW.Eppuls](https://github.com/TableRW/TableRW.Eppuls)
+- NPOI: [TableRW.NPOI](https://github.com/TableRW/TableRW.NPOI)
+
 ## 从 `DataTable` 读取到 Entity
 
 ### 添加命名空间

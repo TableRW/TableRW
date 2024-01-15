@@ -7,6 +7,11 @@ A library for reading and writing table data, using expression trees to generate
 dotnet add package TableRW
 ```
 
+## Other related library implementation
+Uses the same read/write configuration methods, also expression tree generation delegates, and also adds some convenience methods related to libraries.
+- Eppuls: [TableRW.Eppuls](https://github.com/TableRW/TableRW.Eppuls)
+- NPOI: [TableRW.NPOI](https://github.com/TableRW/TableRW.NPOI)
+
 ## Read from `DataTable` to Entity
 
 ### Add namespace
