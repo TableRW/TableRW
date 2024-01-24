@@ -9,8 +9,11 @@ dotnet add package TableRW
 
 ## Other related library implementation
 Uses the same read/write configuration methods, also expression tree generation delegates, and also adds some convenience methods related to libraries.
-- Eppuls: [TableRW.Eppuls](https://github.com/TableRW/TableRW.Eppuls)
-- NPOI: [TableRW.NPOI](https://github.com/TableRW/TableRW.NPOI)
+
+|  Lib   |  Link  |  Version  |
+|  ----  |  ----  |  -------  |
+| Epplus | [TableRW.Epplus](https://github.com/TableRW/TableRW.Epplus) | [![NuGet Version](https://img.shields.io/nuget/v/TableRW.Epplus.svg?label=NuGet)](https://www.nuget.org/packages/TableRW.Epplus) |
+| NPOI   | [TableRW.NPOI](https://github.com/TableRW/TableRW.NPOI) | [![NuGet Version](https://img.shields.io/nuget/v/TableRW.NPOI.svg?label=NuGet)](https://www.nuget.org/packages/TableRW.NPOI) |
 
 ## Read from `DataTable` to Entity
 
