@@ -1,5 +1,6 @@
 # TableRW (English | [中文](Doc/README.zh-CN.md))
 [![NuGet Version](https://img.shields.io/nuget/v/TableRW.svg?label=NuGet)](https://www.nuget.org/packages/TableRW)
+![Netstandard2.0](https://img.shields.io/badge/.NET-Standard2.0-blue)
 
 A library for reading and writing table data, using expression trees to generate delegates (Lambda), quickly and conveniently reading and writing data to entity objects (Entity), and mapping multi-layer entities to read and write.
 
@@ -12,8 +13,8 @@ Uses the same read/write configuration methods, also expression tree generation 
 
 |  Lib   |  Link  |  Version  |
 |  ----  |  ----  |  -------  |
-| Epplus | [TableRW.Epplus](https://github.com/TableRW/TableRW.Epplus) | [![NuGet Version](https://img.shields.io/nuget/v/TableRW.Epplus.svg?label=NuGet)](https://www.nuget.org/packages/TableRW.Epplus) |
-| NPOI   | [TableRW.NPOI](https://github.com/TableRW/TableRW.NPOI) | [![NuGet Version](https://img.shields.io/nuget/v/TableRW.NPOI.svg?label=NuGet)](https://www.nuget.org/packages/TableRW.NPOI) |
+| Epplus | [TableRW.Epplus](https://github.com/TableRW/TableRW.Epplus) | [![NuGet Version](https://img.shields.io/nuget/v/TableRW.Epplus.svg?label=NuGet)](https://www.nuget.org/packages/TableRW.Epplus) ![Netstandard2.0](https://img.shields.io/badge/.NET-Standard2.0-blue) |
+| NPOI   | [TableRW.NPOI](https://github.com/TableRW/TableRW.NPOI) | [![NuGet Version](https://img.shields.io/nuget/v/TableRW.NPOI.svg?label=NuGet)](https://www.nuget.org/packages/TableRW.NPOI) ![Netstandard2.0](https://img.shields.io/badge/.NET-Standard2.0-blue) |
 
 ## Read from `DataTable` to Entity
 
@@ -47,7 +48,7 @@ public class EntityA {
     public int Id { get; set; }
     public string Name { get; set; }
     public DateTime Date { get; set; }
-    public List<EntityB> SubB { get; set; }
+    public List<EntityB> SubList { get; set; }
 }
 public class EntityB {
     public int Id { get; set; }
@@ -67,8 +68,8 @@ var readFn = readLmd.Compile(); // Func<DataTable, List<EntityA>>
 // | 20  | name2 | 201  | text201 | remark201
 var list = readFn(table); // List<EntityA>
 _ = list.Count == 2;
-_ = list[0].SubB.Count == 2;
-_ = list[1].SubB.Count == 1;
+_ = list[0].SubList.Count == 2;
+_ = list[1].SubList.Count == 1;
 
 ```
 

@@ -47,7 +47,7 @@ public class EntityA {
     public int Id { get; set; }
     public string Name { get; set; }
     public DateTime Date { get; set; }
-    public List<EntityB> SubB { get; set; }
+    public List<EntityB> SubList { get; set; }
 }
 public class EntityB {
     public int Id { get; set; }
@@ -67,8 +67,8 @@ var readFn = readLmd.Compile(); // Func<DataTable, List<EntityA>>
 // | 20  | name2 | 201  | text201 | remark201
 var list = readFn(table); // List<EntityA>
 _ = list.Count == 2;
-_ = list[0].SubB.Count == 2;
-_ = list[1].SubB.Count == 1;
+_ = list[0].SubList.Count == 2;
+_ = list[1].SubList.Count == 1;
 
 ```
 
